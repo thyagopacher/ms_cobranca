@@ -6,5 +6,6 @@ services:
     restart: always
     volumes:
         - ./src:/var/www/html
+        - ./vhost.conf:/var/www/html/vhost.conf
     ports:
       - "80:80"
