@@ -1,1 +1,5 @@
+#carrega o PHP / HTML
 src
+
+#arquivos do mysql
+datadir
