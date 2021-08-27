@@ -1,0 +1,10 @@
+version: '3'
+services:
+  web:
+    build: .
+    container_name: apache_web
+    restart: always
+    volumes:
+        - ./src:/var/www/html
+    ports:
+      - "80:80"
