@@ -9,13 +9,15 @@ services:
       - ./vhost.conf:/var/www/html/vhost.conf
     ports:
       - "80:80"
+    depends_on:
+      - db      
     links:
       - db
   db:
     image: mysql:5.7
     restart: always
     environment:
-      MYSQL_DATABASE: banco
+#      MYSQL_DATABASE: banco
       MYSQL_ROOT_PASSWORD: brasil
     volumes:
       - ./datadir:/var/lib/mysql
