@@ -14,8 +14,7 @@
 */
 
 $router->get('/', function () use ($router) {
-    // return $router->app->version();
-    return "oi";
+    return $router->app->version();
 });
 
 $router->get('/debug-sentry', function () {
