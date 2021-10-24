@@ -12,11 +12,11 @@ services:
     depends_on:
       - mysql
       - mailhog 
-      - rabbitmq            
+      - rabbit            
     links:
       - mysql
       - mailhog
-      - rabbitmq       
+      - rabbit       
   mysql:
     image: mysql:5.7
     container_name: mysql
@@ -33,17 +33,17 @@ services:
     ports: 
     - 1025:1025
     - 8025:8025  
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    container_name: rabbitmq
+  rabbit:
+    image: "rabbitmq:3.7.17"
+    container_name: rabbit
+    labels:
+      NAME: "rabbit"    
     volumes:
-      - ./.docker/rabbitmq/etc/:/etc/rabbitmq/
-      - ./.docker/rabbitmq/data/:/var/lib/rabbitmq/
-      - ./.docker/rabbitmq/logs/:/var/log/rabbitmq/
+      - ${DATA_PATH_HOST}/rabbitmq:/var/lib/rabbitmq/mnesia
     environment:
-      RABBITMQ_ERLANG_COOKIE: admin
       RABBITMQ_DEFAULT_USER: admin
       RABBITMQ_DEFAULT_PASS: admin
+      RABBITMQ_DEFAULT_VHOST: "/"
     ports:
     - 5672:5672
     - 15672:15672    
