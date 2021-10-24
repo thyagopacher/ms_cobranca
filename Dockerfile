@@ -10,6 +10,8 @@ RUN docker-php-ext-install mysqli pdo_mysql
 RUN a2enmod rewrite
 RUN service apache2 restart
 
+RUN rabbitmq-plugins enable rabbitmq_management
+
 COPY src/ /var/www/html/
 COPY vhost.conf /etc/apache2/sites-enabled/vhost.conf
 
