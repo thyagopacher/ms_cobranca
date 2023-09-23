@@ -6,17 +6,14 @@ services:
     restart: always
     volumes:
       - ./src:/var/www/html
-      - ./vhost.conf:/var/www/html/vhost.conf
     ports:
       - "80:80"
     depends_on:
       - mysql
       - mailhog 
-      - rabbit            
     links:
       - mysql
       - mailhog
-      - rabbit       
   mysql:
     image: mysql:5.7
     container_name: mysql
@@ -32,18 +29,4 @@ services:
     image: mailhog/mailhog
     ports: 
     - 1025:1025
-    - 8025:8025  
-  rabbit:
-    image: "rabbitmq:3-management"
-    container_name: rabbit
-    labels:
-      NAME: "rabbit"    
-    volumes:
-      - ./.docker/rabbitmq:/var/lib/rabbitmq/mnesia
-    environment:
-      RABBITMQ_DEFAULT_USER: admin
-      RABBITMQ_DEFAULT_PASS: admin
-      RABBITMQ_DEFAULT_VHOST: "/"
-    ports:
-    - 5672:5672
-    - 15672:15672    
+    - 8025:8025
