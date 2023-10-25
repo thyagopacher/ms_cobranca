@@ -1,0 +1,41 @@
+version: "3"
+services:
+  web:
+    build: .
+    container_name: apache_web
+    restart: always
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql
+      - mailhog 
+      - redis
+    links:
+      - mysql
+      - mailhog
+  mysql:
+    image: mysql:5.7
+    container_name: mysql
+    restart: always
+    environment:
+#      MYSQL_DATABASE: banco
+      MYSQL_ROOT_PASSWORD: brasil
+    volumes:
+      - ./.docker/mysql/:/var/lib/mysql/
+    ports:
+      - 3306:3306
+  redis:
+    container_name: redis
+    image: redis:4.0.5-alpine
+    command: ['redis-server', '--appendonly', 'yes']
+    hostname: 'redis'
+    ports:
+      - "6379:6379"
+  mailhog:
+    container_name: mailhog
+    image: mailhog/mailhog
+    ports: 
+    - 1025:1025
+    - 8025:8025
