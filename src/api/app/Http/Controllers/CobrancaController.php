@@ -41,22 +41,24 @@ class CobrancaController extends Controller
                 $totalLinhasArquivo = count($linhas);
 
                 $storage = app('filesystem');
-                $path = $storage->disk('local')->put($fileName, $file->getContent());
+                $path = Storage::disk('local')->put($fileName, $file->getContent());
 
                 $dadosPlanilhaSalva = [
                     'arquivo' => $fileName,
+                    'nomeOriginal' => $file->getClientOriginalName(),
                     'totalLinhas' => $totalLinhasArquivo,
                     'totalImportado' => 0
                 ];
-                $resImportacaoSalva = $this->importacaoService->saveFile($dadosPlanilhaSalva);
-                if($resImportacaoSalva){
+                $idImportacaoSalva = $this->importacaoService->saveFile($dadosPlanilhaSalva);
+                if($idImportacaoSalva > 0){
                     $responseArr = [
                         'Status' => true,
-                        'Msg' => 'Arquivo salvo arquivo processamento'
+                        'Msg' => 'Arquivo salvo arquivo processamento',
+                        'IdImportacao' => $idImportacaoSalva
                     ];
                     $statusResponse = Response::HTTP_OK;
 
-                    dispatch(new ProcessarCobrancaJob());
+                    dispatch(new ProcessarCobrancaJob($idImportacaoSalva));
                 }else{
                     $responseArr = [
                         'Status' => false,

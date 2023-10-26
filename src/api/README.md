@@ -22,6 +22,11 @@ O comando irá criar a tabela migrations no banco:
 php artisan migrate:install
 ```
 
+Para rodar migrations ja configuradas anterior - requerimento para rodar o projeto
+```
+php artisan migrate 
+```
+
 ## Rotas importantes
 
 Upload do arquivo para processamento da cobrança, aonde os mesmos serão salvos na pasta /storage/app/

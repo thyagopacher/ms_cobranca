@@ -21,8 +21,16 @@ class ImportacaoService{
         $this->importacao = $importacao;
     }
 
-    
-    public function saveFile(array $dados):bool{
+    /**
+     * saveFile
+     *
+     * save or update in table importacaos
+     * 
+     * @param array $dados
+     * @return integer
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function saveFile(array $dados):int{
 
         if(empty($dados['arquivo'])){
             throw new ParameterException('Parametro inválido');
@@ -33,12 +41,14 @@ class ImportacaoService{
             $importacao = new Importacao();
         }
  
+        $importacao->nomeOriginal = $dados['nomeOriginal'];
         $importacao->arquivo = $dados['arquivo'];
         $importacao->totalLinhas = $dados['totalLinhas'];
         $importacao->totalImportado = isset($dados['totalImportado']) ? $dados['totalImportado'] : 0;
 
         $importacao->save();
-        return true;
+
+        return $importacao->id;
     }
 
     /**
@@ -54,7 +64,7 @@ class ImportacaoService{
         if(!$res->isEmpty()){
             $ret = $res->toArray();
         }
-        
+
         return $ret;
     }
 }

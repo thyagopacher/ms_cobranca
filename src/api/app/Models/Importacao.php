@@ -8,8 +8,10 @@ class Importacao extends Model
 {
 
     protected $fillable = [
-        'id', 'arquivo', 'totalLinhas', 'totalImportado', 'created_at', 'updated_at'
+        'arquivo', 'totalLinhas', 'totalImportado', 'created_at', 'updated_at'
     ];
+
+    protected $primaryKey = 'id';
 
     public function scopeListFile($query, array $params){
         if(!empty($params['notFinished'])){

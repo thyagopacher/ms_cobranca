@@ -8,7 +8,8 @@ class Cobranca extends Model
 {
 
     protected $fillable = [
-        'id', 'name','governmentId','email', 'debtAmount', 'debtDueDate', 'debtId', 'created_at', 'updated_at'
+        'name','governmentId','email', 'debtAmount', 'debtDueDate', 'debtId', 'created_at', 'updated_at'
     ];
 
+    protected $primaryKey = 'id';
 }

@@ -8,15 +8,17 @@ use Illuminate\Support\Facades\Log;
 class ProcessarCobrancaJob extends Job
 {
 
+    private $idImportacaoSalva;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct()
+    public function __construct($idImportacaoSalva = null)
     {
         LOG::info('ProcessarCobrancaJob::__construct');
+        $this->idImportacaoSalva  = $idImportacaoSalva;
     }
 
     /**
@@ -30,7 +32,12 @@ class ProcessarCobrancaJob extends Job
         LOG::info('ProcessarCobrancaJob::handle');
 
         try{
-            $cobrancaService->processCobranca();
+
+            $resJob = $cobrancaService->processCobranca($this->idImportacaoSalva);
+            
+            $sitJob = $resJob ? "Rodou com sucesso" : "Problema ao rodar JOB";
+            LOG::info($sitJob);
+
         }catch(\Exception $e){
             $res = [
                 'File' => $e->getMessage(),
