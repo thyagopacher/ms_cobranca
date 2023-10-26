@@ -21,8 +21,8 @@ class MailCobranca extends Mailable{
     private string $froName;
 
     private string $toMail;
-    private string $subject;
-    private string $body;
+    private string $subjectMail;
+    private string $bodyMail;
     private array $dados;
 
     public function __construct(string $toMail, string $subjectMail, string $bodyMail, array $dados){
@@ -34,9 +34,9 @@ class MailCobranca extends Mailable{
 
     public function build(){
         return $this->to($this->toMail)
-            ->from(this->fromMail, this->fromMail)
+            ->from($this->fromMail, $this->fromMail)
             ->subject($this->subjectMail)
-            ->view('mails.cobranca', $this->dados)
+            ->view('mails.cobranca', $this->dados);
     }
 
 }

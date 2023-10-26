@@ -5,10 +5,14 @@ RUN apt-get update && \
     apt-get upgrade -y && \
     apt-get install -y git
 
-RUN apt update && apt install -y unzip && apt install nano
+RUN apt update && apt install -y unzip 
 
+#Editor de texto para o bash NANO
+RUN apt install nano
 
 ENV DEBIAN_FRONTEND noninteractive
+
+#Ajuste do timezone para o padrão Brasil
 RUN apt-get install -y tzdata \
     && ln -fs /usr/share/zoneinfo/America/Fortaleza /etc/localtime && dpkg-reconfigure -f noninteractive tzdata
 
@@ -18,7 +22,11 @@ RUN apt-get -y update \
 && docker-php-ext-install intl \
 && docker-php-ext-install sockets pcntl
 
+#suporte para o REDIS atrelado ao container e PHP
+RUN pecl install redis \
+&& docker-php-ext-enable redis
 
+#suporte para o MySQL atrelado ao container e PHP
 RUN docker-php-ext-install mysqli pdo_mysql
 
 COPY src/ /var/www/html/

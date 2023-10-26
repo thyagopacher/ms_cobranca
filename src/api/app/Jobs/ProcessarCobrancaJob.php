@@ -44,7 +44,7 @@ class ProcessarCobrancaJob extends Job
                 'Line' => $e->getLine(),
                 'Code' => $e->getCode()
             ];
-            LOG::info('Error: '.json_encode($res));
+            LOG::error('Error: '.json_encode($res));
         }
     }
 }

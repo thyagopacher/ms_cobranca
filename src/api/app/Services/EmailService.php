@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use App\Mail\MailCobranca;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * EmailService
@@ -11,13 +13,18 @@ use Illuminate\Support\Facades\Log;
  */
 class EmailService{
 
-    public function __construct()
+    public function __construct(CobrancaService $cobrancaService)
     {
         
     }
 
-    public function sendEmail($to, $subject, $message){
+    public function sendEmailCobranca(){
+
+    }
+
+    public function sendEmail($to, $subject, $message, $dadosCobranca){
         LOG::info('EmailService::sendEmail');
+        Mail::send(new MailCobranca($to, $subject, $message, $dadosCobranca));
         return true;
     }
 }
