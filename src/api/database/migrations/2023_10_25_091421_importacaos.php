@@ -17,6 +17,7 @@ class Importacaos extends Migration
             Schema::create('importacaos', function (Blueprint $table) {
                 $table->id();
                 $table->string('arquivo');
+                $table->string('nomeOriginal');
                 $table->integer('totalLinhas');
                 $table->integer('totalImportado');
                 $table->timestamps();

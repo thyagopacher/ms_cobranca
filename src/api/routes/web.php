@@ -22,6 +22,7 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'cobranca'], function() use ($router){
-    $router->post('/salvar-arquivo', ['uses' => 'CobrancaController@salvarArquivo']);
+    $router->post('save-file', ['uses' => 'CobrancaController@saveFile']);
+    $router->post('list-file', ['uses' => 'CobrancaController@listFile']);
 });
 

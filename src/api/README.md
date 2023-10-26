@@ -24,5 +24,8 @@ php artisan migrate:install
 
 ## Rotas importantes
 
-UPload do arquivo para processamento da cobrança
-/cobranca/salvar-arquivo
+Upload do arquivo para processamento da cobrança, aonde os mesmos serão salvos na pasta /storage/app/
+/cobranca/save-file
+
+Para listar os arquivos importados para processamento da cobrança
+/cobranca/list-file

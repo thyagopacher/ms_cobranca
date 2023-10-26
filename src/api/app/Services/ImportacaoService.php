@@ -22,7 +22,7 @@ class ImportacaoService{
     }
 
     
-    public function salvarArquivo(array $dados):bool{
+    public function saveFile(array $dados):bool{
 
         if(empty($dados['arquivo'])){
             throw new ParameterException('Parametro inválido');
@@ -39,5 +39,22 @@ class ImportacaoService{
 
         $importacao->save();
         return true;
+    }
+
+    /**
+     * listFile
+     *
+     * @param array $params
+     * @return array
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function listFile(array $params):array{
+        $ret = [];
+        $res = Importacao::listFile($params);
+        if(!$res->isEmpty()){
+            $ret = $res->toArray();
+        }
+        
+        return $ret;
     }
 }

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Jobs\ProcessarCobrancaJob;
 use App\Services\ImportacaoService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Storage;
 
 class CobrancaController extends Controller
 {
@@ -20,7 +22,7 @@ class CobrancaController extends Controller
         $this->importacaoService = $importacaoService;
     }
 
-    public function salvarArquivo(Request $request){
+    public function saveFile(Request $request){
 
 
         $responseArr = [];
@@ -34,30 +36,39 @@ class CobrancaController extends Controller
                 
                 $fileName = uniqid().".csv";
                 $path = $file->path();
-                var_dump($path);
+
                 $linhas = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                 $totalLinhasArquivo = count($linhas);
 
-                $file->move($this->destino_arquivo, $fileName);
-                
+                $storage = app('filesystem');
+                $path = $storage->disk('local')->put($fileName, $file->getContent());
+
                 $dadosPlanilhaSalva = [
                     'arquivo' => $fileName,
                     'totalLinhas' => $totalLinhasArquivo,
                     'totalImportado' => 0
                 ];
-                $resImportacaoSalva = $this->importacaoService->salvarArquivo($dadosPlanilhaSalva);
+                $resImportacaoSalva = $this->importacaoService->saveFile($dadosPlanilhaSalva);
                 if($resImportacaoSalva){
                     $responseArr = [
                         'Status' => true,
                         'Msg' => 'Arquivo salvo arquivo processamento'
                     ];
                     $statusResponse = Response::HTTP_OK;
+
+                    dispatch(new ProcessarCobrancaJob());
+                }else{
+                    $responseArr = [
+                        'Status' => false,
+                        'Msg' => 'Erro ao salvar importação'
+                    ];
                 }
             }else{
                 $responseArr = [
                     'Status' => false,
                     'Msg' => 'Arquivo invalido, por favor conferir'
                 ];
+                
                 if($file != null){
                     $error = $file->getErrorMessage();
                     $responseArr['Msg'] .= ' - Erro: ' . $error;
@@ -73,10 +84,33 @@ class CobrancaController extends Controller
                 'File' => $ex->getFile(),
                 'Code' => $ex->getCode()
             );
+            
             $statusResponse = Response::HTTP_INTERNAL_SERVER_ERROR;
 
         }finally{
             return response()->json($responseArr, $statusResponse);
+        }
+    }
+
+    public function listFile(Request $request){
+
+        try{
+
+            $params = $request->all();
+            $resList = $this->importacaoService->listFile($params);
+
+            return response()->json([
+                'Data' => $resList
+            ], Response::HTTP_OK);
+
+        }catch(\Exception $e){
+            $responseArr = [
+                'File' => $e->getFile(),
+                'Msg' => $e->getMessage(),
+                'Code' => $e->getCode(),
+                'Line' => $e->getLine()
+            ];
+            return response()->json($responseArr, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
