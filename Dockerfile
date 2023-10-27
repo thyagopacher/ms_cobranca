@@ -22,6 +22,16 @@ RUN apt-get -y update \
 && docker-php-ext-install intl \
 && docker-php-ext-install sockets pcntl
 
+# Gestor de JOBs para o Laravel
+RUN apt-get update && apt-get install -y openssh-server apache2 supervisor
+RUN mkdir -p /var/lock/apache2 /var/run/apache2 /var/run/sshd /var/log/supervisor
+
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+RUN /usr/bin/supervisord
+
+RUN echo user=root >>  /etc/supervisor/supervisord.conf
+CMD ["/usr/bin/supervisord","-n"]
+
 #suporte para o REDIS atrelado ao container e PHP
 RUN pecl install redis \
 && docker-php-ext-enable redis
@@ -46,6 +56,7 @@ RUN a2ensite vhost.conf
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
 RUN service apache2 restart
+RUN service supervisor restart
 
 #coloca um padrão melhor para memory do PHP
 RUN cd /usr/local/etc/php/conf.d/ && \
