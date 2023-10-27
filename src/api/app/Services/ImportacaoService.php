@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\CadastroContract;
 use App\Models\Importacao;
 use App\Exceptions\ParameterException;
 
@@ -10,7 +11,7 @@ use App\Exceptions\ParameterException;
  *
  * @author Thyago H. Pacher <thyago.pacher@gmail.com>
  */
-class ImportacaoService{
+class ImportacaoService implements CadastroContract{
 
     private $importacao;
 
@@ -22,7 +23,7 @@ class ImportacaoService{
     }
 
     /**
-     * saveFile
+     * save
      *
      * save or update in table importacaos
      * 
@@ -30,7 +31,7 @@ class ImportacaoService{
      * @return integer
      * @author Thyago H. Pacher <thyago.pacher@gmail.com>
      */
-    public function saveFile(array $dados):int{
+    public function save(array $dados):int{
 
         if(empty($dados['arquivo'])){
             throw new ParameterException('Parametro inválido');
@@ -51,14 +52,43 @@ class ImportacaoService{
         return $importacao->id;
     }
 
+
     /**
-     * listFile
+     * delete
+     *
+     * @param int $id
+     * @return bool
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function delete(int $id):bool{
+        $res = Importacao::where('id', $id)->delete();
+        return $res;
+    }
+
+    /**
+     * findById
+     *
+     * @param int $id
+     * @return array
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function findById(int $id):array{
+        $ret = [];
+        $res = Importacao::where('id', $id)->get();
+        if(!$res->isEmpty()){
+            $ret = $res->toArray();
+        }
+        return $ret;
+    }
+
+    /**
+     * findAll
      *
      * @param array $params
      * @return array
      * @author Thyago H. Pacher <thyago.pacher@gmail.com>
      */
-    public function listFile(array $params):array{
+    public function findAll(array $params):array{
         $ret = [];
         $res = Importacao::listFile($params);
         if(!$res->isEmpty()){

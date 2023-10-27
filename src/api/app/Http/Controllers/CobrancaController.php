@@ -11,14 +11,12 @@ use Illuminate\Support\Facades\Storage;
 class CobrancaController extends Controller
 {
 
-    private string $destino_arquivo;
     private $importacaoService;
 
     public function __construct(
         ImportacaoService $importacaoService
     )
     {
-        $this->destino_arquivo = './storage/app/';
         $this->importacaoService = $importacaoService;
     }
 
@@ -35,12 +33,15 @@ class CobrancaController extends Controller
             if ($file != null && $file->isValid()) {
                 
                 $fileName = uniqid().".csv";
+                //só pra evitar sobrecarregar com testes locais
+                if(getenv('APP_ENV') == 'local'){
+                    $fileName = 'arquivo_cobranca.csv';
+                }
                 $path = $file->path();
 
                 $linhas = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
                 $totalLinhasArquivo = count($linhas);
 
-                $storage = app('filesystem');
                 $path = Storage::disk('local')->put($fileName, $file->getContent());
 
                 $dadosPlanilhaSalva = [
@@ -49,7 +50,7 @@ class CobrancaController extends Controller
                     'totalLinhas' => $totalLinhasArquivo,
                     'totalImportado' => 0
                 ];
-                $idImportacaoSalva = $this->importacaoService->saveFile($dadosPlanilhaSalva);
+                $idImportacaoSalva = $this->importacaoService->save($dadosPlanilhaSalva);
                 if($idImportacaoSalva > 0){
                     $responseArr = [
                         'Status' => true,
@@ -94,15 +95,55 @@ class CobrancaController extends Controller
         }
     }
 
-    public function listFile(Request $request){
-
+    public function findById(int $id){
         try{
 
-            $params = $request->all();
-            $resList = $this->importacaoService->listFile($params);
+            $resList = $this->importacaoService->findById($id);
 
             return response()->json([
                 'Data' => $resList
+            ], Response::HTTP_OK);
+
+        }catch(\Exception $e){
+            $responseArr = [
+                'File' => $e->getFile(),
+                'Msg' => $e->getMessage(),
+                'Code' => $e->getCode(),
+                'Line' => $e->getLine()
+            ];
+            return response()->json($responseArr, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    
+    public function listFile(Request $request){
+        try{
+
+            $params = $request->all();
+            $resList = $this->importacaoService->findAll($params);
+
+            return response()->json([
+                'Data' => $resList
+            ], Response::HTTP_OK);
+
+        }catch(\Exception $e){
+            $responseArr = [
+                'File' => $e->getFile(),
+                'Msg' => $e->getMessage(),
+                'Code' => $e->getCode(),
+                'Line' => $e->getLine()
+            ];
+            return response()->json($responseArr, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function deleteFile(int $id){
+        try{
+
+            $resList = $this->importacaoService->delete($id);
+
+            return response()->json([
+                'Status' => true,
+                'Msg' => 'Arquivo excluido',
             ], Response::HTTP_OK);
 
         }catch(\Exception $e){

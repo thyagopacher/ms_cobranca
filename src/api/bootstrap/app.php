@@ -23,6 +23,7 @@ $app = new Laravel\Lumen\Application(
     dirname(__DIR__)
 );
 
+//habilita logs com LOG::info
 $app->withFacades();
 
 $app->withEloquent();

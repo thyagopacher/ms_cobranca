@@ -34,3 +34,11 @@ Upload do arquivo para processamento da cobrança, aonde os mesmos serão salvos
 
 Para listar os arquivos importados para processamento da cobrança
 /cobranca/list-file
+
+## Para rodar os testes no bash
+
+Comando configurado no arquivo composer.json
+
+```
+composer teste
+```

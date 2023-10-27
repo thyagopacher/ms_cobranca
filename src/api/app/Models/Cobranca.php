@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 class Cobranca extends Model 
 {
@@ -12,4 +13,5 @@ class Cobranca extends Model
     ];
 
     protected $primaryKey = 'id';
+
 }

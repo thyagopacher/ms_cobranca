@@ -23,6 +23,8 @@ $router->get('/', function () use ($router) {
 
 $router->group(['prefix' => 'cobranca'], function() use ($router){
     $router->post('save-file', ['uses' => 'CobrancaController@saveFile']);
+    $router->get('find-file/{id}', ['uses' => 'CobrancaController@findById']);
     $router->post('list-file', ['uses' => 'CobrancaController@listFile']);
+    $router->delete('delete-file/{id}', ['uses' => 'CobrancaController@deleteFile']);
 });
 

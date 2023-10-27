@@ -2,10 +2,10 @@
 
 namespace App\Services;
 
+use App\Contracts\CadastroContract;
 use App\Models\Cobranca;
-use App\Models\Importacao;
-use App\Exceptions\ParameterException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 /**
  * CobrancaService
@@ -28,24 +28,46 @@ class CobrancaService{
      *
      * vai buscar o arquivo da planilha para salvar os dados da mesma na tabela - cobrancas
      * 
-     * @param integer|null $idImportacaoSalva
+     * @param integer $idImportacaoSalva
      * @return boolean
      * @author Thyago H. Pacher <thyago.pacher@gmail.com>
      */
-    public function processCobranca(int $idImportacaoSalva = null):bool{
+    public function processCobranca(int $idImportacaoSalva):bool{
 
-        $arrFilter = [];
-        $arrFilter['notFinished'] = 'S';
-        if($idImportacaoSalva != null){
-            $arrFilter['id'] = $idImportacaoSalva;
-            unset($arrFilter['notFinished']);
-        }
-        $resImportacao = $this->importacaoService->listFile($arrFilter);
+        LOG::info('CobrancaService::processCobranca');
+
+        $chunk = 1024;
+        $resImportacao = $this->importacaoService->findById($idImportacaoSalva);
+
         if(!empty($resImportacao)){
             foreach ($resImportacao as $key => $importacaoPlanilha) {
+                
                 $local = $importacaoPlanilha['arquivo'];
                 $contents = Storage::disk('local')->get($local);
-                print_r($contents);
+                $lines = explode("\n", $contents);
+                $indiceLinhas = 0;
+                
+                unset($lines[0]);//retirando linha de cabeçalho não é necessário processar isso.
+
+                foreach(array_chunk($lines, $chunk) as $linesPartial){
+
+                    $cobrancas = [];
+
+                    foreach ($linesPartial as $key => $line) {
+                        $separaLine = explode(",", $line);
+                        $cobrancas[] = $separaLine;
+                    }
+                    
+                    Cobranca::upsert($cobrancas, ['name', 'email']);
+                    LOG::info('Inserindo agrupamento:: '. $indiceLinhas);
+
+                    $indiceLinhas++;
+
+                }
+
+
+                
+
             }
         }
 

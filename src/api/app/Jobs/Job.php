@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Log;
 
 abstract class Job implements ShouldQueue
 {
@@ -21,4 +22,14 @@ abstract class Job implements ShouldQueue
     */
 
     use InteractsWithQueue, Queueable, SerializesModels;
+    
+    public function failed(\Throwable $th){
+        $arrLog = [
+            'File' => $th->getFile(),
+            'Line' => $th->getLine(),
+            'Code' => $th->getCode(),
+            'Message' => $th->getMessage(),
+        ];
+        LOG::info('Job::failed - Error:'. json_encode($arrLog));
+    }
 }

@@ -15,7 +15,7 @@ class ProcessarCobrancaJob extends Job
      *
      * @return void
      */
-    public function __construct($idImportacaoSalva = null)
+    public function __construct(int $idImportacaoSalva)
     {
         LOG::info('ProcessarCobrancaJob::__construct');
         $this->idImportacaoSalva  = $idImportacaoSalva;
