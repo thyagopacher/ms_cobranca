@@ -47,6 +47,8 @@ class CobrancaService{
                 $lines = explode("\n", $contents);
                 $indiceLinhas = 0;
                 
+                LOG::info(" == Total linhas do arquivo: ". count($lines));
+
                 unset($lines[0]);//retirando linha de cabeçalho não é necessário processar isso.
 
                 foreach(array_chunk($lines, $chunk) as $linesPartial){
@@ -55,19 +57,23 @@ class CobrancaService{
 
                     foreach ($linesPartial as $key => $line) {
                         $separaLine = explode(",", $line);
-                        //name,governmentId,email,debtAmount,debtDueDate,debtId
-                        $cobrancas[] = [
-                            'name' => $separaLine[0],
-                            'governmentId' => $separaLine[1],
-                            'email' => $separaLine[2],
-                            'debtAmount' => (float) $separaLine[3],
-                            'debtDueDate' => $separaLine[4],
-                            'debtId' => $separaLine[5],
-                        ];
+                        if(!empty($separaLine[0])){
+                            //name,governmentId,email,debtAmount,debtDueDate,debtId
+                            $cobrancas[] = [
+                                'name' => $separaLine[0],
+                                'governmentId' => $separaLine[1],
+                                'email' => $separaLine[2],
+                                'debtAmount' => (float) $separaLine[3],
+                                'debtDueDate' => $separaLine[4],
+                                'debtId' => $separaLine[5],
+                            ];
+                        }
                     }
 
                     Cobranca::upsert($cobrancas, ['name', 'email']);
-                    LOG::info('Inserindo agrupamento:: '. $indiceLinhas);
+
+                    $totalProcessado = ($indiceLinhas + 1) * $chunk;
+                    LOG::info('Inserindo agrupamento:: '. $indiceLinhas . ' - total: '. $totalProcessado);
 
                     $indiceLinhas++;
 

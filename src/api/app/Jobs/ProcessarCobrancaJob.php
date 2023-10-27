@@ -8,6 +8,10 @@ use Illuminate\Support\Facades\Log;
 class ProcessarCobrancaJob extends Job
 {
 
+    public $tries = 200;
+
+    public $timeout = 21600;
+
     private $idImportacaoSalva;
 
     /**
@@ -40,7 +44,8 @@ class ProcessarCobrancaJob extends Job
 
         }catch(\Exception $e){
             $res = [
-                'File' => $e->getMessage(),
+                'File' => $e->getFile(),
+                'Msg' => $e->getMessage(),
                 'Line' => $e->getLine(),
                 'Code' => $e->getCode()
             ];
