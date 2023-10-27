@@ -33,10 +33,11 @@ class MailCobranca extends Mailable{
     }
 
     public function build(){
+        $dadosMsg['mensagem'] = '';
         return $this->to($this->toMail)
             ->from($this->fromMail, $this->fromMail)
             ->subject($this->subjectMail)
-            ->view('mails.cobranca', $this->dados);
+            ->view('mails.cobranca', $dadosMsg);
     }
 
 }

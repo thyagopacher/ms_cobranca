@@ -1,6 +1,13 @@
 # teste_kanastra
 front + backend + docker atrelado
 
+# Requerimentos
+
+1 - docker instalado 
+
+Exemplo de tutorial para instalar caso seja necessário:
+https://www.digitalocean.com/community/tutorials/how-to-install-and-use-docker-compose-on-ubuntu-20-04
+
 # docker-web
 
 Estrutura básica para docker Apache que pode servir como substitudo para o XAMPP.
@@ -34,7 +41,7 @@ docker exec -it apache_web /bin/bash
 
 ## Para adicionar o HOST
 
-Ex: no Ubuntu
+Ex: no Ubuntu (padrão para sistemas baseados no Debian), os caminhos são bem diferentes de acordo com o sistema.
 ```
 sudo nano /etc/hosts 
 ```
@@ -44,6 +51,13 @@ Add. na ultima linha preferencialmente
 ```
 127.0.0.1   api.local
 ```
+
+Caso seja nos sistemas de Windows pode procurar o arquivo de hosts em: 
+```
+C:\Windows\System32\drivers\etc\hosts
+```
+
+E adicionar a linha igual de forma parecida acima.
 
 ## Softwares recomendados
 

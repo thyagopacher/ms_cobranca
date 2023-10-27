@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        //
+        Commands\SendMail::class
     ];
 
     /**
@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //
+        //previamente agendado para ocorrer as 10hs da manha o envio de emails
+        $schedule->command('api:sendmail')->cron('0 10 * * *');
     }
 }

@@ -5,7 +5,7 @@ namespace App\Jobs;
 use App\Services\EmailService;
 use Illuminate\Support\Facades\Log;
 
-class EnviarEmailJob extends Job
+class EmailJob extends Job
 {
 
     public $tries = 200;
@@ -19,7 +19,7 @@ class EnviarEmailJob extends Job
      */
     public function __construct()
     {
-        LOG::info('EnviarEmailJob::__construct');
+        LOG::info('EmailJob::__construct');
     }
 
     /**
@@ -29,7 +29,7 @@ class EnviarEmailJob extends Job
      */
     public function handle(EmailService $emailService)
     {
-        LOG::info('EnviarEmailJob::handle');
+        LOG::info('EmailJob::handle');
 
         try{
 
