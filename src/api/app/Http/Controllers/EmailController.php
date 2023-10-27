@@ -2,25 +2,47 @@
 
 namespace App\Http\Controllers;
 
-use App\Jobs\ProcessarCobrancaJob;
-use App\Services\CobrancaService;
+use App\Jobs\EmailJob;
+use App\Services\EmailService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Storage;
 
-class CobrancaController extends Controller
+class EmailController extends Controller
 {
 
-    private $cobrancaService;
+    private $emailService;
 
     public function __construct(
-        CobrancaService $cobrancaService
+        EmailService $emailService
     )
     {
-        $this->cobrancaService = $cobrancaService;
+        $this->emailService = $emailService;
     }
 
-    public function saveCobranca(Request $request){
+    public function sendEmailCobranca(){
+        try{
+
+            dispatch(new EmailJob());
+
+            $httpCode = Response::HTTP_OK;
+
+            return response()->json([
+                'Msg' => 'JOB iniciado para cobrança',
+                'Status' => true,
+            ], $httpCode);
+
+        }catch(\Exception $e){
+            $responseArr = [
+                'File' => $e->getFile(),
+                'Msg' => $e->getMessage(),
+                'Code' => $e->getCode(),
+                'Line' => $e->getLine()
+            ];
+            return response()->json($responseArr, Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function saveEmail(Request $request){
 
 
         $responseArr = [];
@@ -28,11 +50,11 @@ class CobrancaController extends Controller
         
         try{
             $params = $request->all();
-            $idSalva = $this->cobrancaService->save($params);
+            $idSalva = $this->emailService->save($params);
             if($idSalva > 0){
                 $responseArr = [
                     'Status' => true,
-                    'Msg' => 'Cobrança salva',
+                    'Msg' => 'E-mail cobrança salvo',
                     'IdImportacao' => $idSalva
                 ];
                 $statusResponse = Response::HTTP_OK;
@@ -40,7 +62,7 @@ class CobrancaController extends Controller
             }else{
                 $responseArr = [
                     'Status' => false,
-                    'Msg' => 'Erro ao salvar Cobrança'
+                    'Msg' => 'Erro ao salvar email'
                 ];
             }
         }catch(\Exception $ex){
@@ -60,10 +82,10 @@ class CobrancaController extends Controller
         }
     }
 
-    public function findByIdCobranca(int $id){
+    public function findByIdEmail(int $id){
         try{
 
-            $resList = $this->cobrancaService->findById($id);
+            $resList = $this->emailService->findById($id);
 
             $httpCode = Response::HTTP_OK;
             if(empty($resList)){
@@ -84,11 +106,11 @@ class CobrancaController extends Controller
         }
     }
     
-    public function listCobranca(Request $request){
+    public function listEmail(Request $request){
         try{
 
             $params = $request->all();
-            $resList = $this->cobrancaService->findAll($params);
+            $resList = $this->emailService->findAll($params);
 
             $httpCode = Response::HTTP_OK;
             if(empty($resList)){
@@ -109,14 +131,14 @@ class CobrancaController extends Controller
         }
     }
 
-    public function deleteCobranca(int $id){
+    public function deleteEmail(int $id){
         try{
 
-            $res = $this->cobrancaService->delete($id);
+            $res = $this->emailService->delete($id);
 
             return response()->json([
                 'Status' => $res,
-                'Msg' => 'Cobrança excluida',
+                'Msg' => 'E-mail excluido',
             ], Response::HTTP_OK);
 
         }catch(\Exception $e){
@@ -129,4 +151,5 @@ class CobrancaController extends Controller
             return response()->json($responseArr, Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 }

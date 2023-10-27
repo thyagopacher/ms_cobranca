@@ -9,6 +9,9 @@
     
     {{$mensagem}}
 
-    <strong> * Este email é gerado automaticamente pela API</strong>
+    <p>
+        <strong> * Este email é gerado automaticamente pela API</strong>
+    </p>
+    
 </body>
 </html>

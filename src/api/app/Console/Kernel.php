@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use App\Console\Commands\SendMail;
 use Illuminate\Console\Scheduling\Schedule;
 use Laravel\Lumen\Console\Kernel as ConsoleKernel;
 
@@ -24,7 +25,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        //previamente agendado para ocorrer as 10hs da manha o envio de emails
-        $schedule->command('api:sendmail')->cron('0 10 * * *');
+        $schedule->command(SendMail::class, [])->cron('*/1 * * * *');
     }
 }

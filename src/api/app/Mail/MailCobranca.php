@@ -25,17 +25,19 @@ class MailCobranca extends Mailable{
     private string $bodyMail;
     private array $dados;
 
-    public function __construct(string $toMail, string $subjectMail, string $bodyMail, array $dados){
+    public function __construct(string $toMail, string $subjectMail, string $bodyMail){
         $this->toMail = $toMail;
         $this->subjectMail = $subjectMail;
         $this->bodyMail = $bodyMail;
-        $this->dados = $dados;
+
+        $this->fromMail = 'teste@mail.com';
+        $this->froName = '';
     }
 
     public function build(){
-        $dadosMsg['mensagem'] = '';
+        $dadosMsg['mensagem'] = $this->bodyMail;
         return $this->to($this->toMail)
-            ->from($this->fromMail, $this->fromMail)
+            ->from($this->fromMail, $this->froName)
             ->subject($this->subjectMail)
             ->view('mails.cobranca', $dadosMsg);
     }

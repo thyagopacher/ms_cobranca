@@ -21,6 +21,9 @@ class Importacao extends Model
         }        
         if(!empty($params['id'])){
             $query->where('id', $params['id']);
+        }        
+        if(!empty($params['limite'])){
+            $query->limit($params['limite']);
         }
         return $query->selectRaw('*')->get();
     }

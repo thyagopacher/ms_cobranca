@@ -100,9 +100,13 @@ class ImportacaoController extends Controller
 
             $resList = $this->importacaoService->findById($id);
 
+            $httpCode = Response::HTTP_OK;
+            if(empty($resList)){
+                $httpCode = Response::HTTP_NOT_FOUND;
+            }
             return response()->json([
                 'Data' => $resList
-            ], Response::HTTP_OK);
+            ], $httpCode);
 
         }catch(\Exception $e){
             $responseArr = [
@@ -121,9 +125,13 @@ class ImportacaoController extends Controller
             $params = $request->all();
             $resList = $this->importacaoService->findAll($params);
 
+            $httpCode = Response::HTTP_OK;
+            if(empty($resList)){
+                $httpCode = Response::HTTP_NOT_FOUND;
+            }
             return response()->json([
                 'Data' => $resList
-            ], Response::HTTP_OK);
+            ], $httpCode);
 
         }catch(\Exception $e){
             $responseArr = [
@@ -142,7 +150,7 @@ class ImportacaoController extends Controller
             $resList = $this->importacaoService->delete($id);
 
             return response()->json([
-                'Status' => true,
+                'Status' => $resList,
                 'Msg' => 'Arquivo excluido',
             ], Response::HTTP_OK);
 
