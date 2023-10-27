@@ -3,7 +3,7 @@
 return [
 
     'default' => env('DB_CONNECTION', ''),
-
+    'migrations' => 'migrations',
     'connections' => [
         
         'mysql' => [

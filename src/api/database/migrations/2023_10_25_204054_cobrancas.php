@@ -21,7 +21,10 @@ class Cobrancas extends Migration
                 $table->string('email')->comment('E-mail do sacado');
                 $table->float('debtAmount')->comment('valor');
                 $table->date('debtDueDate')->comment('Data para ser paga');
+                $table->string('debtId')->comment('uuid para o débito');
                 $table->timestamps();
+
+                $table->unique(['name', 'email']);
             }); 
         }
     }

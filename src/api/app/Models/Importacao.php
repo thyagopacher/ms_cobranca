@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Importacao extends Model 
 {
 
+    protected $table = "importacaos"; 
+
     protected $fillable = [
         'arquivo', 'totalLinhas', 'totalImportado', 'created_at', 'updated_at'
     ];

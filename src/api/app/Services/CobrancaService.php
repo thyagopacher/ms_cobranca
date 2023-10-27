@@ -55,9 +55,17 @@ class CobrancaService{
 
                     foreach ($linesPartial as $key => $line) {
                         $separaLine = explode(",", $line);
-                        $cobrancas[] = $separaLine;
+                        //name,governmentId,email,debtAmount,debtDueDate,debtId
+                        $cobrancas[] = [
+                            'name' => $separaLine[0],
+                            'governmentId' => $separaLine[1],
+                            'email' => $separaLine[2],
+                            'debtAmount' => (float) $separaLine[3],
+                            'debtDueDate' => $separaLine[4],
+                            'debtId' => $separaLine[5],
+                        ];
                     }
-                    
+
                     Cobranca::upsert($cobrancas, ['name', 'email']);
                     LOG::info('Inserindo agrupamento:: '. $indiceLinhas);
 
