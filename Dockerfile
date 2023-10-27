@@ -30,7 +30,7 @@ COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 RUN /usr/bin/supervisord
 
 RUN echo user=root >>  /etc/supervisor/supervisord.conf
-CMD ["/usr/bin/supervisord","-n"]
+
 
 #suporte para o REDIS atrelado ao container e PHP
 RUN pecl install redis \
@@ -55,9 +55,6 @@ RUN a2ensite vhost.conf
 # Install Composer
 RUN php -r "readfile('http://getcomposer.org/installer');" | php -- --install-dir=/usr/bin/ --filename=composer
 
-RUN service apache2 restart
-RUN service supervisor restart
-
 #coloca um padrão melhor para memory do PHP
 RUN cd /usr/local/etc/php/conf.d/ && \
   echo 'memory_limit = 2048M' >> /usr/local/etc/php/conf.d/docker-php-ram-limit.ini
@@ -71,3 +68,5 @@ RUN cd /usr/local/etc/php/conf.d/ && \
 #
 # Expose port 80
 EXPOSE 80
+CMD ["/usr/bin/supervisord","-n"]
+
