@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Contracts\CadastroContract;
+use App\Exceptions\ParameterException;
 use App\Models\Cobranca;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ use Illuminate\Support\Facades\Log;
  *
  * @author Thyago H. Pacher <thyago.pacher@gmail.com>
  */
-class CobrancaService{
+class CobrancaService implements CadastroContract{
 
     public ImportacaoService $importacaoService;
 
@@ -78,13 +79,94 @@ class CobrancaService{
                     $indiceLinhas++;
 
                 }
-
-
-                
-
             }
         }
 
         return true;
+    }
+
+
+    /**
+     * save
+     *
+     * save or update in table 
+     * 
+     * campos = 'name','governmentId','email', 'debtAmount', 'debtDueDate', 'debtId', 'created_at', 'updated_at'
+     * 
+     * @param array $dados
+     * @return integer
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function save(array $dados):int{
+        if(empty($dados['name'])){
+            throw new ParameterException('Name is required');
+        }
+
+        if(empty($dados['email'])){
+            throw new ParameterException('Email is required');
+        }
+
+        if(!empty($dados['id'])){
+            $cobranca = Cobranca::find($dados['id']);
+        }else{
+            $cobranca = new Cobranca();
+        }
+ 
+        $cobranca->name = $dados['name'];
+        $cobranca->governmentId = $dados['governmentId'];
+        $cobranca->email = $dados['email'];
+        $cobranca->debtAmount = $dados['debtAmount'];
+        $cobranca->debtDueDate = $dados['debtDueDate'];
+        $cobranca->debtId = $dados['debtId'];
+
+        $cobranca->save();
+
+        return $cobranca->id;
+    }
+
+
+    /**
+     * delete
+     *
+     * @param int $id
+     * @return bool
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function delete(int $id):bool{
+        $res = Cobranca::where('id', $id)->delete();
+        return $res;
+    }
+
+    /**
+     * findById
+     *
+     * @param int $id
+     * @return array
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function findById(int $id):array{
+        $ret = [];
+        $res = Cobranca::where('id', $id)->get();
+        if(!$res->isEmpty()){
+            $ret = $res->toArray();
+        }
+        return $ret;
+    }
+
+    /**
+     * findAll
+     *
+     * @param array $params
+     * @return array
+     * @author Thyago H. Pacher <thyago.pacher@gmail.com>
+     */
+    public function findAll(array $params):array{
+        $ret = [];
+        $res = Cobranca::listCobranca($params);
+        if(!$res->isEmpty()){
+            $ret = $res->toArray();
+        }
+
+        return $ret;
     }
 }

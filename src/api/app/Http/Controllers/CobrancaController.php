@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Jobs\ProcessarCobrancaJob;
-use App\Services\ImportacaoService;
+use App\Services\CobrancaService;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Storage;
@@ -11,72 +11,37 @@ use Illuminate\Support\Facades\Storage;
 class CobrancaController extends Controller
 {
 
-    private $importacaoService;
+    private $cobrancaService;
 
     public function __construct(
-        ImportacaoService $importacaoService
+        CobrancaService $cobrancaService
     )
     {
-        $this->importacaoService = $importacaoService;
+        $this->cobrancaService = $cobrancaService;
     }
 
-    public function saveFile(Request $request){
+    public function saveCobranca(Request $request){
 
 
         $responseArr = [];
         $statusResponse = 500;
         
         try{
-
-            $file = $request->file('arquivo');
-
-            if ($file != null && $file->isValid()) {
-                
-                $fileName = uniqid().".csv";
-                //só pra evitar sobrecarregar com testes locais
-                if(getenv('APP_ENV') == 'local'){
-                    $fileName = 'arquivo_cobranca.csv';
-                }
-                $path = $file->path();
-
-                $linhas = file($path, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                $totalLinhasArquivo = count($linhas);
-
-                $path = Storage::disk('local')->put($fileName, $file->getContent());
-
-                $dadosPlanilhaSalva = [
-                    'arquivo' => $fileName,
-                    'nomeOriginal' => $file->getClientOriginalName(),
-                    'totalLinhas' => $totalLinhasArquivo,
-                    'totalImportado' => 0
+            $params = $request->all();
+            $idSalva = $this->cobrancaService->save($params);
+            if($idSalva > 0){
+                $responseArr = [
+                    'Status' => true,
+                    'Msg' => 'Cobrança salva',
+                    'IdImportacao' => $idSalva
                 ];
-                $idImportacaoSalva = $this->importacaoService->save($dadosPlanilhaSalva);
-                if($idImportacaoSalva > 0){
-                    $responseArr = [
-                        'Status' => true,
-                        'Msg' => 'Arquivo salvo arquivo processamento',
-                        'IdImportacao' => $idImportacaoSalva
-                    ];
-                    $statusResponse = Response::HTTP_OK;
+                $statusResponse = Response::HTTP_OK;
 
-                    dispatch(new ProcessarCobrancaJob($idImportacaoSalva));
-                }else{
-                    $responseArr = [
-                        'Status' => false,
-                        'Msg' => 'Erro ao salvar importação'
-                    ];
-                }
             }else{
                 $responseArr = [
                     'Status' => false,
-                    'Msg' => 'Arquivo invalido, por favor conferir'
+                    'Msg' => 'Erro ao salvar Cobrança'
                 ];
-                
-                if($file != null){
-                    $error = $file->getErrorMessage();
-                    $responseArr['Msg'] .= ' - Erro: ' . $error;
-                }
-                $statusResponse = Response::HTTP_BAD_REQUEST;
             }
         }catch(\Exception $ex){
             
@@ -95,10 +60,10 @@ class CobrancaController extends Controller
         }
     }
 
-    public function findById(int $id){
+    public function findByIdCobranca(int $id){
         try{
 
-            $resList = $this->importacaoService->findById($id);
+            $resList = $this->cobrancaService->findById($id);
 
             return response()->json([
                 'Data' => $resList
@@ -115,11 +80,11 @@ class CobrancaController extends Controller
         }
     }
     
-    public function listFile(Request $request){
+    public function listCobranca(Request $request){
         try{
 
             $params = $request->all();
-            $resList = $this->importacaoService->findAll($params);
+            $resList = $this->cobrancaService->findAll($params);
 
             return response()->json([
                 'Data' => $resList
@@ -136,14 +101,14 @@ class CobrancaController extends Controller
         }
     }
 
-    public function deleteFile(int $id){
+    public function deleteCobranca(int $id){
         try{
 
-            $resList = $this->importacaoService->delete($id);
+            $res = $this->cobrancaService->delete($id);
 
             return response()->json([
-                'Status' => true,
-                'Msg' => 'Arquivo excluido',
+                'Status' => $res,
+                'Msg' => 'Cobrança excluida',
             ], Response::HTTP_OK);
 
         }catch(\Exception $e){

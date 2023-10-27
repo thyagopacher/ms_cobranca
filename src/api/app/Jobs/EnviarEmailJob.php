@@ -7,6 +7,11 @@ use Illuminate\Support\Facades\Log;
 
 class EnviarEmailJob extends Job
 {
+
+    public $tries = 200;
+
+    public $timeout = 21600;
+    
     /**
      * Create a new job instance.
      *

@@ -22,9 +22,16 @@ $router->get('/', function () use ($router) {
 });
 
 $router->group(['prefix' => 'cobranca'], function() use ($router){
-    $router->post('save-file', ['uses' => 'CobrancaController@saveFile']);
-    $router->get('find-file/{id}', ['uses' => 'CobrancaController@findById']);
-    $router->post('list-file', ['uses' => 'CobrancaController@listFile']);
-    $router->delete('delete-file/{id}', ['uses' => 'CobrancaController@deleteFile']);
+
+    $router->post('save-file', ['uses' => 'ImportacaoController@saveFile']);
+    $router->get('find-file/{id}', ['uses' => 'ImportacaoController@findById']);
+    $router->post('list-file', ['uses' => 'ImportacaoController@listFile']);
+    $router->delete('delete-file/{id}', ['uses' => 'ImportacaoController@deleteFile']);    
+    
+    $router->post('save-cobranca', ['uses' => 'CobrancaController@saveCobranca']);
+    $router->get('find-cobranca/{id}', ['uses' => 'CobrancaController@findByIdCobranca']);
+    $router->post('list-cobranca', ['uses' => 'CobrancaController@listCobranca']);
+    $router->delete('delete-cobranca/{id}', ['uses' => 'CobrancaController@deleteCobranca']);
+
 });
 

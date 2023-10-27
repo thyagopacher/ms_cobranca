@@ -16,5 +16,14 @@ class Cobranca extends Model
 
     protected $primaryKey = 'id';
 
-
+    public function scopeListCobranca($query, array $params){
+   
+        if(!empty($params['id'])){
+            $query->where('id', $params['id']);
+        }       
+        if(!empty($params['limite'])){
+            $query->limit($params['limite']);
+        }
+        return $query->selectRaw('*')->get();
+    }
 }
