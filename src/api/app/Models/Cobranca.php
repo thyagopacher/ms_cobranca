@@ -38,10 +38,18 @@ class Cobranca extends Model
         
         if(!empty($params['id'])){
             $query->where('id', $params['id']);
-        }       
-        if(!empty($params['limite'])){
+        }     
+        if(!empty($params['pagina'])){
+            $limite = $params['limite'];
+            $pagina = $params['pagina'];
+            $query->skip(($pagina - 1) * $limite); // Pula registros
+            $query->take($limite); // Limita a quantidade de registros
+        }elseif(!empty($params['limite'])){
             $query->limit($params['limite']);
-        }
+        }        
+
+        $query->orderBy('id', 'asc');
+
         return $query->selectRaw('*')->get();
     }
 }
