@@ -16,6 +16,11 @@ function FileListPage(): ReactElement {
 
   const { state: { fileList }, dispatch } = useFileContext();
   
+  // Função para inverter a data de YYYY-MM-DD para DD/MM/YYYY
+  const inverterData = (data: string) => {
+    const [year, month, day] = data.split('-');
+    return `${day}/${month}/${year}`;
+  };
 
   const listFilesPage = (page?: number, limit?: number) => {
 
@@ -82,7 +87,7 @@ function FileListPage(): ReactElement {
                 <TableCell className="text-right">{item.governmentId}</TableCell>
                 <TableCell className="text-center">{item.email}</TableCell>
                 <TableCell className="text-right">{item.debtAmount}</TableCell>
-                <TableCell className="text-right">{item.debtDueDate}</TableCell>
+                <TableCell className="text-right">{inverterData(item.debtDueDate)}</TableCell>
                 <TableCell className="text-right">{item.debtId}</TableCell>
               </TableRow>
             ))
