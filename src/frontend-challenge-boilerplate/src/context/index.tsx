@@ -24,7 +24,7 @@ const FileContext = createContext<{
 const FileReducer = (
   state: FileContextState,
   action: FileAction,
-): FileContextState => {
+): FileContextState => { 
   switch (action.type) {
     case FileActionType.SET_UPLOAD_FILE: {
       // Create the action return
