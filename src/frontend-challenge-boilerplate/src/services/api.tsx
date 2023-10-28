@@ -10,7 +10,7 @@ export const saveFile = async (formData: FormData) => {
 
 export const listFiles = async (page: number, size: number) => {
   const response: Response = await fetch(
-    `${endpoint}/cobranca/processamento/list-cobranca?page=${page}&limite=${size}`,
+    `${endpoint}/cobranca/processamento/list-cobranca?pagina=${page}&limite=${size}`,
     {
       method: "GET",
     }

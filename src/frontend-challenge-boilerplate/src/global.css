@@ -16,3 +16,11 @@
     font-family: "Inter", sans-serif;
   }
 }
+
+.btnPagination:hover{
+  background: grey;
+}
+
+.btnPagination:visited{
+  background: rgb(182, 179, 179);
+}

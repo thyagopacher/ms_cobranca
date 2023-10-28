@@ -69,9 +69,12 @@ class CobrancaController extends Controller
             if(empty($resList)){
                 $httpCode = Response::HTTP_NOT_FOUND;
             }
-            return response()->json([
+
+            $arrRet = [
                 'Data' => $resList
-            ], $httpCode);
+            ];
+
+            return response()->json($arrRet, $httpCode);
 
         }catch(\Exception $e){
             $responseArr = [
@@ -94,9 +97,14 @@ class CobrancaController extends Controller
             if(empty($resList)){
                 $httpCode = Response::HTTP_NOT_FOUND;
             }
-            return response()->json([
+
+            $arrRet = [
                 'Data' => $resList
-            ], $httpCode);
+            ];
+            if(!empty($params['pagina'])){
+                $arrRet['page'] = $params['pagina'];
+            }
+            return response()->json($arrRet, $httpCode);
 
         }catch(\Exception $e){
             $responseArr = [

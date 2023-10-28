@@ -2,7 +2,10 @@ import { useFileContext } from "@/context";
 import { ChangeEvent, useState } from "react";
 import { FileActionType } from "@/constants";
 import { saveFile } from "@/services/api";
- 
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+
+const MySwal = withReactContent(Swal);
 const SingleFileUploader = () => {
   const { state: { file }, dispatch } =  useFileContext();
 
@@ -20,8 +23,6 @@ const SingleFileUploader = () => {
 
   const handleUpload = async () => {
 
-    const [swalProps, setSwalProps] = useState({});
-
     // Do your upload logic here. Remember to use the FileContext
     dispatch({
       type: FileActionType.SET_IS_LOADING,
@@ -37,7 +38,19 @@ const SingleFileUploader = () => {
     saveFile(formData).then((result) => {
         return result.json();
     }).then((res) => {
-      alert(res.Msg);
+      if(res.Status){
+        MySwal.fire({
+          title: <strong>Cadastro salvo</strong>,
+          html: <i>{res.Msg}</i>,
+          icon: 'success'
+        })
+      }else{
+        MySwal.fire({
+          title: <strong>Erro</strong>,
+          html: <i>{res.Msg}</i>,
+          icon: 'error'
+        })
+      }
     }).finally(() => {
         dispatch({
           type: FileActionType.SET_IS_LOADING,

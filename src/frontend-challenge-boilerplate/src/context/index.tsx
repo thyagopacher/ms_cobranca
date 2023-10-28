@@ -32,7 +32,6 @@ const FileReducer = (
     }
     case FileActionType.SET_FILE_LIST: {
       // Create the action return
-      console.log('entro... listar');
       return { ...state, fileList: action.payload?.fileList };
     }
     case FileActionType.SET_IS_LOADING: {
