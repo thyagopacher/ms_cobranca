@@ -1,7 +1,7 @@
 import { useFileContext } from "@/context";
 import { ChangeEvent, useState } from "react";
 import { FileActionType } from "@/constants";
-
+import { saveFile } from "@/services/api";
  
 const SingleFileUploader = () => {
   const { state: { file }, dispatch } =  useFileContext();
@@ -18,9 +18,32 @@ const SingleFileUploader = () => {
     
   };
 
-  const handleUpload = async (e: ChangeEvent<HTMLInputElement>) => {
-    // Do your upload logic here. Remember to use the FileContext
+  const handleUpload = async () => {
 
+    const [swalProps, setSwalProps] = useState({});
+
+    // Do your upload logic here. Remember to use the FileContext
+    dispatch({
+      type: FileActionType.SET_IS_LOADING,
+      payload: { isLoading: true },
+    });
+
+    const formData = new FormData();
+    if (file == null) {
+      return;
+    }
+    formData.append("arquivo", file);
+
+    saveFile(formData).then((result) => {
+        return result.json();
+    }).then((res) => {
+      alert(res.Msg);
+    }).finally(() => {
+        dispatch({
+          type: FileActionType.SET_IS_LOADING,
+          payload: { isLoading: false },
+        });
+    });
   };
 
   return (

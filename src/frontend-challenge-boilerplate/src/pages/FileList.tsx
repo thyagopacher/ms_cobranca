@@ -1,4 +1,4 @@
-import { ReactElement } from "react";
+import { ReactElement, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -7,13 +7,48 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
+} from "@/components/ui/table";
+import { FileActionType } from "@/constants";
 import { useFileContext } from "@/context";
+import { listFiles } from "@/services/api";
 
-function FileList(): ReactElement {
+function FileListPage(): ReactElement {
 
-  const { state: { fileList } } = useFileContext();
+  const { state: { fileList }, dispatch } = useFileContext();
   
+
+  const listFilesPage = (page?: number, size?: number) => {
+
+    const sizeToSearch = size == undefined ? 10 : size;
+    const pageToSearch = page == undefined ? 1 : page;
+    dispatch({
+      type: FileActionType.SET_IS_LOADING,
+      payload: { isLoading: true },
+    });
+    listFiles(pageToSearch, sizeToSearch)
+      .then(async (result) => {
+        let json = await result.json();
+        const fileListRecept = json.Data;
+        console.log(fileListRecept);
+        result.ok &&
+          dispatch({
+            type: FileActionType.SET_FILE_LIST,
+            payload: { fileList: fileListRecept },
+          });
+      })
+      .finally(() => {
+        dispatch({
+          type: FileActionType.SET_IS_LOADING,
+          payload: { isLoading: false },
+        });
+      });
+  };
+
+  useEffect(() => {
+    listFilesPage();
+  }, []);
+
+
   // Remember to keep the fileList updated after upload a new file
   /**
    *  Colunas planilha - teste - 'name', 'governmentId', 'email', 'debtAmount', 'debtDueDate', 'debtId', 
@@ -35,18 +70,25 @@ function FileList(): ReactElement {
             </TableRow>
           </TableHeader>
           <TableBody>
-            <TableRow>
-              <TableCell className="font-medium">INV001</TableCell>
-              <TableCell>123</TableCell>
-              <TableCell>123@sss</TableCell>
-              <TableCell className="text-right">R$25.000,00</TableCell>
-              <TableCell className="text-right">11/12/1987</TableCell>
-              <TableCell className="text-right">123sf1fs32</TableCell>
-            </TableRow>
+            {
+            
+            fileList != undefined && fileList.map((item, index) => (
+            <TableRow key={index}>
+                <TableCell>{item.name}</TableCell>
+                <TableCell>{item.governmentId}</TableCell>
+                <TableCell>{item.email}</TableCell>
+                <TableCell>{item.debtAmount}</TableCell>
+                <TableCell>{item.debtDueDate}</TableCell>
+                <TableCell>{item.debtId}</TableCell>
+              </TableRow>
+            ))
+            
+            }            
+
           </TableBody>
         </Table>
       </>
     )
 }
 
-export { FileList };
+export { FileListPage };

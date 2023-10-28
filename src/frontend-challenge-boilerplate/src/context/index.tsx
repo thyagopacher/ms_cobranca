@@ -1,5 +1,4 @@
 import { createContext, useContext, useReducer } from "react";
-
 import { FileActionType } from "@/constants";
 import {
   FileAction,
@@ -7,6 +6,7 @@ import {
   FileDispatch,
   FileProviderProps,
 } from "@/types";
+
 
 export const FileContextInitialValues: Partial<FileContextState> = {
   file: {} as File,
@@ -32,6 +32,7 @@ const FileReducer = (
     }
     case FileActionType.SET_FILE_LIST: {
       // Create the action return
+      console.log('entro... listar');
       return { ...state, fileList: action.payload?.fileList };
     }
     case FileActionType.SET_IS_LOADING: {

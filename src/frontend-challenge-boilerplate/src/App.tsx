@@ -1,7 +1,7 @@
 import { ReactElement } from "react";
 import { Routes, Route } from "react-router-dom";
 import { Layout, NoMatch } from "./components";
-import { FileList, Upload } from "./pages";
+import { FileListPage as FileList, Upload } from "./pages";
 
 
 export function App(): ReactElement {
