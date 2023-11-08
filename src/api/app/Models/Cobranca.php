@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 
-class Cobranca extends Model 
+class Cobranca extends Model
 {
 
-    protected $table = "cobrancas"; 
+    protected $table = "cobrancas";
 
     protected $fillable = [
-        'name', 
+        'name',
         'governmentId', //número do documento
         'email', //email do sacado
         'debtAmount', //valor
-        'debtDueDate', //Data para ser paga 
+        'debtDueDate', //Data para ser paga
         'debtId', //uuid para o débito
-        'created_at', 
+        'created_at',
         'updated_at'
     ];
 
@@ -27,18 +27,18 @@ class Cobranca extends Model
         if(!empty($params['diaParaEnvioCobranca'])){
             $hoje = date('Y-m-d');
             $query->where('debtDueDate', '<=', $hoje);
-        }            
-        if(!empty($params['enviadoCobranca'])){
+        }
+        if (!empty($params['enviadoCobranca'])) {
             if($params['enviadoCobranca'] == "S"){
                 $query->whereRaw('id in(select idCobranca from mail_cobrancas)');
             }elseif($params['enviadoCobranca'] == "N"){
                 $query->whereRaw('id not in(select idCobranca from mail_cobrancas)');
             }
-        }       
-        
+        }
+
         if(!empty($params['id'])){
             $query->where('id', $params['id']);
-        }     
+        }
         if(!empty($params['pagina'])){
             $limite = $params['limite'];
             $pagina = $params['pagina'];
@@ -46,7 +46,7 @@ class Cobranca extends Model
             $query->take($limite); // Limita a quantidade de registros
         }elseif(!empty($params['limite'])){
             $query->limit($params['limite']);
-        }        
+        }
 
         $query->orderBy('id', 'asc');
 
